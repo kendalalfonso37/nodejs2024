@@ -9,17 +9,7 @@ const http = require("http");
 const app = express();
 
 // Log requests to the console.
-// app.use(logger("dev"));
-
-app.use(
-  logger(
-    ":method :host :status :param[id] :res[content-length] - :response-time ms",
-  ),
-);
-
-logger.token("param", function (req, res, param) {
-  return req.params[param];
-});
+app.use(logger("dev"));
 
 // Parse incoming requests data (https://github.com/expressjs/body-parser)
 app.use(bodyParser.json());
