@@ -1,8 +1,8 @@
 {
-    "recommendations": [
-        "mikestead.dotenv",
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
-        "MylesMurphy.prettify-ts",
-    ],
+  "recommendations": [
+    "mikestead.dotenv",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "MylesMurphy.prettify-ts"
+  ]
 }
