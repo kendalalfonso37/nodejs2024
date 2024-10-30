@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 
 // importando routes
 const authRoutes = require("./routes/authRoutes");
+const usuariosRoutes = require("./routes/usuariosRoutes");
 
 // This will be our application entry. We'll setup our server here
 const http = require("http");
@@ -22,6 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Registrar rutas:
 app.use("/auth", authRoutes);
+app.use("/usuarios", usuariosRoutes);
 
 // Middleware para manejar rutas inexistentes (404)
 app.use(notFoundHandler);

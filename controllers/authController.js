@@ -66,16 +66,7 @@ const register = async (req, res) => {
       password: hashedPassword,
     });
 
-    // Generar el token JWT
-    const token = jwt.sign(
-      { id: newUser.id, email: newUser.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" },
-    );
-
-    return res
-      .status(201)
-      .json({ message: "Usuario registrado exitosamente", token });
+    return res.status(201).json({ message: "Usuario registrado exitosamente" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error en el servidor" });
