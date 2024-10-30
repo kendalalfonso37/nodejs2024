@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 // This will be our application entry. We'll setup our server here
 const http = require("http");
 const notFoundHandler = require("./middlewares/notFoundHandler");
+const errorHandler = require("./middlewares/errorHandler");
 
 // Set up the express app
 const app = express();
@@ -24,6 +25,9 @@ app.use("/auth", authRoutes);
 
 // Middleware para manejar rutas inexistentes (404)
 app.use(notFoundHandler);
+
+// Middleware para manejar Errores
+app.use(errorHandler);
 
 const port = parseInt(process.env.PORT, 10) || 8000;
 app.set("port", port);
