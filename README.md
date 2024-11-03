@@ -10,8 +10,8 @@ Repositorio de prueba para crear una aplicacion Node.js con MySQL y Sequelize
 - Postman
 - DBeaver, MySQL Workbench u otra aplicacion que permita conectar a la base de datos.
 - Git
-- Sequelize (Instalado de manera global)
-- ESLint (Instalado de manera global)
+- Sequelize CLI (Ins1ztalado de manera global) npm install --global sequelize-cli
+- ESLint (Instalado de manera global) npm install --global eslint
 
 # Instalacion
 
@@ -42,3 +42,28 @@ Ejecutar prettier para listar errores en formato dentro del codigo.
 `npm run style-fix`
 
 Ejecutar prettier para corregir errores en formato dentro del codigo.
+
+
+`sequelize db:create`
+
+Crea la base de datos utilizando sequelize.
+
+`sequelize model:create --name usuario --attributes username:string,email:string,password:string,is_active:boolean`
+
+Crea un nuevo Modelo y su archivo de migracion.
+
+`sequelize db:migrate`
+
+Migra nuestros cambios y los sube a nuestra base de datos.
+
+`sequelize seed:create`
+
+Crea un nuevo archivo de seed.
+
+`sequelize db:drop`
+
+Borra la base de datos incluidos datos y tablas. **Usar con precaucion**
+
+`sequelize --help`
+
+Ver la ayuda asociada al comando sequelize.
