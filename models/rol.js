@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      rol.belongsToMany(models.usuario, { through: models.usuario_rol });
+      rol.belongsToMany(models.usuario, {
+        through: models.usuario_rol,
+        foreignKey: "rol_id", // Clave foránea en usuario_rol que hace referencia a rol
+        otherKey: "usuario_id", // Clave foránea en usuario_rol que hace referencia a usuario
+      });
     }
   }
   rol.init(
