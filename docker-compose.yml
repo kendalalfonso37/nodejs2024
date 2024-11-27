@@ -1,6 +1,6 @@
 services:
   mariadb:
-    env_file: .env
+    # env_file: .env
     image: mariadb:lts
     restart: always
     ports:
