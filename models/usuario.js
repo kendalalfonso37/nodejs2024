@@ -15,20 +15,41 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "usuario_id", // Clave foránea en usuario_rol que hace referencia a usuario
         otherKey: "rol_id", // Clave foránea en usuario_rol que hace referencia a rol
       });
+      usuario.hasMany(models.refresh_token, {
+        foreignKey: "usuario_id",
+      });
     }
   }
   usuario.init(
     {
       id: {
+        field: "id",
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
       },
-      username: { type: DataTypes.STRING, allowNull: false },
-      email: { type: DataTypes.STRING, allowNull: false, unique: true },
-      password: { type: DataTypes.STRING, allowNull: false },
-      is_active: { type: DataTypes.BOOLEAN, defaultValue: true },
+      username: {
+        field: "username",
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        field: "email",
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      password: {
+        field: "password",
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      is_active: {
+        field: "is_active",
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      },
     },
     {
       sequelize,

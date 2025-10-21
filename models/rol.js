@@ -20,14 +20,27 @@ module.exports = (sequelize, DataTypes) => {
   rol.init(
     {
       id: {
+        field: "id",
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
       },
-      nombre: { type: DataTypes.STRING, allowNull: false },
-      descripcion: { type: DataTypes.STRING, allowNull: false },
-      is_active: { type: DataTypes.BOOLEAN, defaultValue: true },
+      nombre: {
+        field: "nombre",
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      descripcion: {
+        field: "descripcion",
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      is_active: {
+        field: "is_active",
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      },
     },
     {
       sequelize,

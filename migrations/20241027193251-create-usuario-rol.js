@@ -13,32 +13,36 @@ module.exports = {
       usuario_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "usuarios",
-          key: "id",
-        },
+        // Otra manera de crear constraints a la base de datos.
+        // references: {
+        //   model: "usuarios",
+        //   key: "id",
+        // },
       },
       rol_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "roles",
-          key: "id",
-        },
+        // Otra manera de crear constraints a la base de datos.
+        // references: {
+        //   model: "roles",
+        //   key: "id",
+        // },
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("CURRENT_TIMESTAMP"),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("CURRENT_TIMESTAMP"),
       },
     });
     await queryInterface.addConstraint("usuario_roles", {
       fields: ["usuario_id"],
       type: "foreign key",
-      name: "fk_usuario_id",
+      name: "fk_usuario_roles_usuarios",
       references: {
         table: "usuarios",
         field: "id",
@@ -49,7 +53,7 @@ module.exports = {
     await queryInterface.addConstraint("usuario_roles", {
       fields: ["rol_id"],
       type: "foreign key",
-      name: "fk_rol_id",
+      name: "fk_usuario_roles_roles",
       references: {
         table: "roles",
         field: "id",

@@ -15,12 +15,14 @@ module.exports = (sequelize, DataTypes) => {
   usuario_rol.init(
     {
       id: {
+        field: "id",
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
       },
       usuario_id: {
+        field: "usuario_id",
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -29,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       rol_id: {
+        field: "rol_id",
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
