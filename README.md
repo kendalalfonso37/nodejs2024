@@ -1,6 +1,6 @@
 # Ejercicio de Backend con Node.js
 
-Repositorio de prueba para crear una aplicacion Node.js con MySQL y Sequelize
+Repositorio de prueba para crear una aplicación Node.js con MySQL y Sequelize
 
 # Requisitos
 
@@ -8,12 +8,12 @@ Repositorio de prueba para crear una aplicacion Node.js con MySQL y Sequelize
 - nvm
 - Docker
 - Postman
-- DBeaver, MySQL Workbench u otra aplicacion que permita conectar a la base de datos.
+- DBeaver, MySQL Workbench u otra aplicación que permita conectar a la base de datos.
 - Git
-- Sequelize CLI (Ins1ztalado de manera global) npm install --global sequelize-cli
+- Sequelize CLI (Instalado de manera global) npm install --global sequelize-cli
 - ESLint (Instalado de manera global) npm install --global eslint
 
-# Instalacion
+# Instalación
 
 1. Clonar el repositorio
 2. copiar el contenido de .env.example en un nuevo archivo .env
@@ -33,15 +33,15 @@ Ejecutar el servidor con node.
 
 `npm run lint`
 
-Ejecuta ESLint para verificar errores en codigo.
+Ejecuta ESLint para verificar errores en código.
 
 `npm run style-check`
 
-Ejecutar prettier para listar errores en formato dentro del codigo.
+Ejecutar prettier para listar errores en formato dentro del código.
 
 `npm run style-fix`
 
-Ejecutar prettier para corregir errores en formato dentro del codigo.
+Ejecutar prettier para corregir errores en formato dentro del código.
 
 
 `sequelize db:create`
@@ -50,7 +50,7 @@ Crea la base de datos utilizando sequelize.
 
 `sequelize model:create --name usuario --attributes username:string,email:string,password:string,is_active:boolean`
 
-Crea un nuevo Modelo y su archivo de migracion.
+Crea un nuevo Modelo y su archivo de migración.
 
 `sequelize db:migrate`
 
@@ -62,7 +62,7 @@ Crea un nuevo archivo de seed.
 
 `sequelize db:drop`
 
-Borra la base de datos incluidos datos y tablas. **Usar con precaucion**
+Borra la base de datos incluidos datos y tablas. **Usar con precaución**
 
 `sequelize --help`
 

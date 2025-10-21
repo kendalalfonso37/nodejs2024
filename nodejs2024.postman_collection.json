@@ -65,7 +65,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "7"
+									"value": "1"
 								}
 							]
 						}
@@ -217,7 +217,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "7"
+									"value": "1"
 								}
 							]
 						}
@@ -262,7 +262,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "7"
+									"value": "1"
 								}
 							]
 						}
@@ -307,7 +307,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "7"
+									"value": "1"
 								}
 							]
 						}
@@ -510,10 +510,12 @@
 							"var jsonData = pm.response.json();",
 							"",
 							"pm.collectionVariables.set(\"access_token\", jsonData.accessToken);",
-							"pm.collectionVariables.set(\"refresh_token\", jsonData.refreshToken);"
+							"pm.collectionVariables.set(\"refresh_token\", jsonData.refreshToken);",
+							""
 						],
 						"type": "text/javascript",
-						"packages": {}
+						"packages": {},
+						"requests": {}
 					}
 				}
 			],
@@ -573,12 +575,29 @@
 		},
 		{
 			"name": "refresh-token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set(\"access_token\", jsonData.accessToken);\r",
+							"pm.collectionVariables.set(\"refresh_token\", jsonData.refreshToken);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJ1c3VhcmlvMUBtYWlsLmNvbSIsImlhdCI6MTczMDI1NzI5MSwiZXhwIjoxNzMwODYyMDkxfQ.4M6uqkSNaJJhozdzqwjnPsdIkRVCiLiFZeyaxnFofTc\"\n}",
+					"raw": "{\n    \"refreshToken\": \"{{refresh_token}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -606,7 +625,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c3VhcmlvQG1haWwuY29tIiwiaWF0IjoxNzMwMTc4OTkwLCJleHAiOjE3MzA3ODM3OTB9.N3v4GAfynhJGq2tp2YY4EzZgE6Zx6mTNYlHs0OXNb0g\"\n}",
+					"raw": "{\n    \"refreshToken\": \"{{refresh_token}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

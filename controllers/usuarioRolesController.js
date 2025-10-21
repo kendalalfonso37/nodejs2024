@@ -2,13 +2,7 @@
 
 const { usuario, rol } = require("./../models/index");
 const { request, response } = require("express");
-const {
-  notFoundResponse,
-  conflictResponse,
-  badRequestResponse,
-} = require("../utils/responseUtils");
-const { ValidationError } = require("sequelize");
-const usuario_rol = require("../models/usuario_rol");
+const { notFoundResponse } = require("../utils/responseUtils");
 
 const getUsuarioRoles = async (req = request, res = response) => {
   const usuarioId = req.params.id;
@@ -34,7 +28,7 @@ const createUsuarioRole = async (req = request, res = response) => {
   const { rol_id } = req.body;
 
   // Validar que el usuario y el rol existan en BD:
-  const user = await usuario.findByPk(usuario_id, {
+  var user = await usuario.findByPk(usuario_id, {
     include: {
       model: rol,
       through: { attributes: [] }, // Esto omite los atributos de la tabla intermedia,
@@ -45,7 +39,14 @@ const createUsuarioRole = async (req = request, res = response) => {
   const role = await rol.findByPk(rol_id);
   if (role === null) return notFoundResponse(res, `Rol no encontrado`);
 
-  user.addRol(role); // Agregamos el rol al usuario con el metodo addRol
+  await user.addRol(role); // Agregamos el rol al usuario con el metodo addRol
+
+  user = await usuario.findByPk(usuario_id, {
+    include: {
+      model: rol,
+      through: { attributes: [] }, // Esto omite los atributos de la tabla intermedia,
+    },
+  });
 
   return res.status(201).json(user.rols);
 };
@@ -66,7 +67,7 @@ const deleteUsuarioRole = async (req = request, res = response) => {
   const role = await rol.findByPk(rol_id);
   if (role === null) return notFoundResponse(res, `Rol no encontrado`);
 
-  user.removeRol(role); // Eliminamos el rol al usuario con el metodo removeRol
+  await user.removeRol(role); // Eliminamos el rol al usuario con el metodo removeRol
 
   return res.status(204).json();
 };

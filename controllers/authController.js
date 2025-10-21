@@ -6,6 +6,7 @@ const {
   generateRefreshToken,
 } = require("../utils/jwtUtils");
 
+// TODO: Tech Debt: Implementar Tabla de Refresh Tokens
 const refreshTokens = []; // Solo un ejemplo, puedes usar un almacenamiento persistente.
 
 const login = async (req, res) => {
@@ -96,13 +97,21 @@ const refreshAccessToken = (req, res) => {
     // Verificar el refreshToken
     const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
-    // Generar un nuevo accessToken
     const accessToken = generateAccessToken({
       id: payload.id,
       email: payload.email,
     });
 
-    return res.json({ accessToken });
+    // Generar un nuevo RefreshToken
+    const newRefreshToken = generateRefreshToken({
+      id: payload.id,
+      email: payload.email,
+    });
+
+    // Almacenar el refreshToken
+    refreshTokens.push(newRefreshToken); // Esto es solo un ejemplo, deberías usar una base de datos.
+
+    return res.json({ accessToken, refreshToken: newRefreshToken });
   } catch (error) {
     return res.status(401).json({
       message: "Refresh token no válido",
