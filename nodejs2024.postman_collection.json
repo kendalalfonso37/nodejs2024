@@ -89,7 +89,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"testello\",\n    \"email\": \"testello1@mail.com\",\n    \"password\": \"testellopassword\"\n}",
+							"raw": "{\n    \"username\": \"testello\",\n    \"email\": \"testello4@mail.com\",\n    \"password\": \"testellopassword\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -126,7 +126,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"usuariotest2\",\n    \"email\": \"usuario2@mail.com\",\n    \"password\": \"password2\",\n    \"is_active\": true\n}",
+							"raw": "{\n    \"username\": \"usuariotest2\",\n    \"email\": \"usuario3@mail.com\",\n    \"password\": \"password2\",\n    \"is_active\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -146,7 +146,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "3"
+									"value": "4"
 								}
 							]
 						}
@@ -181,7 +181,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "1"
+									"value": "4"
 								}
 							]
 						}
@@ -552,7 +552,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"testello\",\n    \"email\": \"testello@mail.com\",\n    \"password\": \"testellopassword\"\n}",
+					"raw": "{\n    \"username\": \"testello\",\n    \"email\": \"testello4@mail.com\",\n    \"password\": \"testellopassword\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -2,7 +2,7 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class rol extends Model {
+  class Rol extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -10,14 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      rol.belongsToMany(models.usuario, {
-        through: models.usuario_rol,
-        foreignKey: "rol_id", // Clave foránea en usuario_rol que hace referencia a rol
-        otherKey: "usuario_id", // Clave foránea en usuario_rol que hace referencia a usuario
+      Rol.belongsToMany(models.Usuario, {
+        through: models.UsuarioRol,
+        foreignKey: "rolId", // Clave foránea en usuario_rol que hace referencia a rol
+        otherKey: "usuarioId", // Clave foránea en usuario_rol que hace referencia a usuario
       });
     }
   }
-  rol.init(
+  Rol.init(
     {
       id: {
         field: "id",
@@ -36,17 +36,34 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      is_active: {
+      isActive: {
         field: "is_active",
         type: DataTypes.BOOLEAN,
         defaultValue: true,
       },
+      createdAt: {
+        field: "created_at",
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: new Date(),
+      },
+      updatedAt: {
+        field: "updated_at",
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: new Date(),
+      },
     },
     {
       sequelize,
-      modelName: "rol",
+      timestamps: true,
+      modelName: "Rol",
+      name: {
+        singular: "Rol",
+        plural: "Roles",
+      },
       tableName: "roles",
     }
   );
-  return rol;
+  return Rol;
 };

@@ -5,12 +5,14 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("usuario_roles", {
       id: {
+        field: "id",
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      usuario_id: {
+      usuarioId: {
+        field: "usuario_id",
         type: Sequelize.INTEGER,
         allowNull: false,
         // Otra manera de crear constraints a la base de datos.
@@ -19,7 +21,8 @@ module.exports = {
         //   key: "id",
         // },
       },
-      rol_id: {
+      rolId: {
+        field: "rol_id",
         type: Sequelize.INTEGER,
         allowNull: false,
         // Otra manera de crear constraints a la base de datos.
@@ -29,11 +32,13 @@ module.exports = {
         // },
       },
       createdAt: {
+        field: "created_at",
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.fn("CURRENT_TIMESTAMP"),
       },
       updatedAt: {
+        field: "updated_at",
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.fn("CURRENT_TIMESTAMP"),

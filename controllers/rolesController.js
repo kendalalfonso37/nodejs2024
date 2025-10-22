@@ -1,6 +1,6 @@
 /** @type {import("express").RequestHandler} */
 
-const { rol } = require("./../models/index");
+const { Rol } = require("./../models/index");
 const { request, response } = require("express");
 const {
   notFoundResponse,
@@ -9,14 +9,14 @@ const {
 const { ValidationError } = require("sequelize");
 
 const getRolesList = async (req = request, res = response) => {
-  const roles = await rol.findAll({ order: ["id"] });
+  const roles = await Rol.findAll({ order: ["id"] });
   return res.status(200).json(roles);
 };
 
 const getRolById = async (req = request, res = response) => {
   const id = req.params.id;
 
-  const role = await rol.findByPk(id);
+  const role = await Rol.findByPk(id);
 
   if (role === null) {
     return notFoundResponse(res, `Rol no encontrado.`);
@@ -31,10 +31,10 @@ const createRol = async (req = request, res = response) => {
   let role;
   // Crear el nuevo rol
   try {
-    role = await rol.create({
+    role = await Rol.create({
       nombre,
       descripcion,
-      is_active: true,
+      isActive: true,
     });
   } catch (error) {
     if (error instanceof ValidationError) {
@@ -46,11 +46,11 @@ const createRol = async (req = request, res = response) => {
 };
 
 const updateRol = async (req = request, res = response) => {
-  const { nombre, descripcion, is_active } = req.body;
+  const { nombre, descripcion, isActive } = req.body;
   const id = req.params.id;
 
   // Recuperar el usuario previo a actualizar su informacion:
-  const role = await rol.findByPk(id);
+  const role = await Rol.findByPk(id);
   if (role === null) {
     return notFoundResponse(res, "Rol no encontrado");
   }
@@ -65,8 +65,8 @@ const updateRol = async (req = request, res = response) => {
     role.descripcion = descripcion;
   }
 
-  if (is_active !== undefined) {
-    role.is_active = is_active;
+  if (isActive !== undefined) {
+    role.isActive = isActive;
   }
 
   await role.save();
@@ -76,7 +76,7 @@ const updateRol = async (req = request, res = response) => {
 
 const deleteRol = async (req = request, res = response) => {
   const id = req.params.id;
-  const role = await rol.findByPk(id);
+  const role = await Rol.findByPk(id);
   if (role === null) {
     return notFoundResponse(res, "Rol no encontrado");
   }

@@ -1,7 +1,7 @@
 /** @type {import("express").RequestHandler} */
 
 const bcrypt = require("bcrypt");
-const { usuario } = require("./../models/index");
+const { Usuario } = require("./../models/index");
 const { request, response } = require("express");
 const {
   notFoundResponse,
@@ -10,14 +10,14 @@ const {
 const { ValidationError } = require("sequelize");
 
 const getUsuariosList = async (req = request, res = response) => {
-  const users = await usuario.findAll({ order: ["id"] });
+  const users = await Usuario.findAll({ order: ["id"] });
   return res.status(200).json(users);
 };
 
 const getUsuarioById = async (req = request, res = response) => {
   const id = req.params.id;
 
-  const user = await usuario.findByPk(id, {
+  const user = await Usuario.findByPk(id, {
     attributes: { exclude: ["password"] }, // No queremos que se devuelva tambien el password del usuario, verdad?
   });
 
@@ -36,7 +36,7 @@ const createUsuario = async (req = request, res = response) => {
   let user;
   // Crear el nuevo usuario
   try {
-    user = await usuario.create({
+    user = await Usuario.create({
       username,
       email,
       password,
@@ -54,11 +54,11 @@ const createUsuario = async (req = request, res = response) => {
 };
 
 const updateUsuario = async (req = request, res = response) => {
-  const { username, email, password, is_active } = req.body;
+  const { username, email, password, isActive } = req.body;
   const id = req.params.id;
 
   // Recuperar el usuario previo a actualizar su informacion:
-  const user = await usuario.findByPk(id);
+  const user = await Usuario.findByPk(id);
   if (user === null) {
     return notFoundResponse(res, "Usuario no encontrado");
   }
@@ -70,7 +70,7 @@ const updateUsuario = async (req = request, res = response) => {
   }
 
   // email nuevo no existe?
-  const existingUser = await usuario.findOne({ where: { email } });
+  const existingUser = await Usuario.findOne({ where: { email } });
 
   if (existingUser) {
     // Hay un usuario que tiene este correo actualmente
@@ -87,8 +87,8 @@ const updateUsuario = async (req = request, res = response) => {
     user.password = await bcrypt.hash(password, 10);
   }
 
-  if (is_active !== undefined) {
-    user.is_active = is_active;
+  if (isActive !== undefined) {
+    user.isActive = isActive;
   }
 
   await user.save();
@@ -99,7 +99,7 @@ const updateUsuario = async (req = request, res = response) => {
 
 const deleteUsuario = async (req = request, res = response) => {
   const id = req.params.id;
-  const user = await usuario.findByPk(id);
+  const user = await Usuario.findByPk(id);
   if (user === null) {
     return notFoundResponse(res, "Usuario no encontrado");
   }

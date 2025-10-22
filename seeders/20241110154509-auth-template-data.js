@@ -21,8 +21,8 @@ module.exports = {
           email: "testello@mail.com",
           password:
             "$2b$10$KEKgx8qDpSFqlhXHmfO4Q.L64eHrm5rFeEJAOkA5USrud3np43v6q", // testellopassword
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           is_active: true,
@@ -30,8 +30,8 @@ module.exports = {
           email: "testello1@mail.com",
           password:
             "$2b$10$KEKgx8qDpSFqlhXHmfO4Q.L64eHrm5rFeEJAOkA5USrud3np43v6q", // testellopassword
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           is_active: true,
@@ -39,8 +39,8 @@ module.exports = {
           email: "testello2@mail.com",
           password:
             "$2b$10$KEKgx8qDpSFqlhXHmfO4Q.L64eHrm5rFeEJAOkA5USrud3np43v6q", // testellopassword
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          created_at: new Date(),
+          updated_at: new Date(),
         },
       ],
       {}
@@ -52,22 +52,22 @@ module.exports = {
           nombre: "ROLE_ADMIN",
           descripcion: "Administrador",
           is_active: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           nombre: "ROLE_USER",
           descripcion: "Usuario",
           is_active: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           nombre: "ROLE_DUMMY",
           descripcion: "Dummy",
           is_active: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          created_at: new Date(),
+          updated_at: new Date(),
         },
       ],
       {}
@@ -82,5 +82,6 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
     await queryInterface.bulkDelete("usuarios", null, {});
+    await queryInterface.bulkDelete("roles", null, {});
   },
 };

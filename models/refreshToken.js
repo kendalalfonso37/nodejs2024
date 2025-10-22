@@ -2,7 +2,7 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class refreshTokens extends Model {
+  class RefreshTokens extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -10,14 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      refreshTokens.belongsTo(models.usuario, {
+      RefreshTokens.belongsTo(models.Usuario, {
         foreignKey: "usuario_id",
         onUpdate: "NO ACTION",
         onDelete: "NO ACTION",
       });
     }
   }
-  refreshTokens.init(
+  RefreshTokens.init(
     {
       id: {
         field: "id",
@@ -44,25 +44,25 @@ module.exports = (sequelize, DataTypes) => {
         field: "issued_time",
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: "CURRENT_TIMESTAMP",
+        defaultValue: new Date(),
       },
       expirationTime: {
         field: "expiration_time",
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: "CURRENT_TIMESTAMP",
+        defaultValue: new Date(),
       },
       createdAt: {
         field: "created_at",
         allowNull: false,
         type: DataTypes.DATE,
-        defaultValue: "CURRENT_TIMESTAMP",
+        defaultValue: new Date(),
       },
       updatedAt: {
         field: "updated_at",
         allowNull: false,
         type: DataTypes.DATE,
-        defaultValue: "CURRENT_TIMESTAMP",
+        defaultValue: new Date(),
       },
       deletedAt: {
         field: "deleted_at",
@@ -75,9 +75,14 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       timestamps: true,
       paranoid: true,
-      modelName: "refresh_token",
+      modelName: "RefreshToken",
+      name: {
+        singular: "RefreshToken",
+        plural: "RefreshTokens",
+      },
+
       tableName: "refresh_tokens",
     }
   );
-  return refreshTokens;
+  return RefreshTokens;
 };
