@@ -80,7 +80,7 @@ const deleteRol = async (req = request, res = response) => {
   if (role === null) {
     return notFoundResponse(res, "Rol no encontrado");
   }
-  role.destroy();
+  await role.destroy();
 
   return res.status(204).json();
 };

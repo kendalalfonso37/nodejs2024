@@ -103,7 +103,7 @@ const deleteUsuario = async (req = request, res = response) => {
   if (user === null) {
     return notFoundResponse(res, "Usuario no encontrado");
   }
-  user.destroy();
+  await user.destroy();
 
   return res.status(204).json();
 };

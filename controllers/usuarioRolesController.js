@@ -24,11 +24,11 @@ const getUsuarioRoles = async (req = request, res = response) => {
 };
 
 const createUsuarioRole = async (req = request, res = response) => {
-  const usuario_id = req.params.id;
-  const { rol_id } = req.body;
+  const usuarioId = req.params.id;
+  const { rolId } = req.body;
 
   // Validar que el usuario y el rol existan en BD:
-  var user = await Usuario.findByPk(usuario_id, {
+  var user = await Usuario.findByPk(usuarioId, {
     include: {
       model: Rol,
       through: { attributes: [] }, // Esto omite los atributos de la tabla intermedia,
@@ -36,12 +36,12 @@ const createUsuarioRole = async (req = request, res = response) => {
   });
   if (user === null) return notFoundResponse(res, `Usuario no encontrado`); // Abreviatura para no poner llaves si el if solo tiene una instruccion.
 
-  const role = await Rol.findByPk(rol_id);
+  const role = await Rol.findByPk(rolId);
   if (role === null) return notFoundResponse(res, `Rol no encontrado`);
 
   await user.addRol(role); // Agregamos el rol al usuario con el metodo addRol
 
-  user = await Usuario.findByPk(usuario_id, {
+  user = await Usuario.findByPk(usuarioId, {
     include: {
       model: Rol,
       through: { attributes: [] }, // Esto omite los atributos de la tabla intermedia,
@@ -52,11 +52,11 @@ const createUsuarioRole = async (req = request, res = response) => {
 };
 
 const deleteUsuarioRole = async (req = request, res = response) => {
-  const usuario_id = req.params.id;
-  const { rol_id } = req.body;
+  const usuarioId = req.params.id;
+  const { rolId } = req.body;
 
   // Validar que el usuario y el rol existan en BD:
-  const user = await Usuario.findByPk(usuario_id, {
+  const user = await Usuario.findByPk(usuarioId, {
     include: {
       model: Rol,
       through: { attributes: [] }, // Esto omite los atributos de la tabla intermedia,
@@ -64,7 +64,7 @@ const deleteUsuarioRole = async (req = request, res = response) => {
   });
   if (user === null) return notFoundResponse(res, `Usuario no encontrado`); // Abreviatura para no poner llaves si el if solo tiene una instruccion.
 
-  const role = await Rol.findByPk(rol_id);
+  const role = await Rol.findByPk(rolId);
   if (role === null) return notFoundResponse(res, `Rol no encontrado`);
 
   await user.removeRol(role); // Eliminamos el rol al usuario con el metodo removeRol

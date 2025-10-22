@@ -1,13 +1,11 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { Usuario } = require("./../models/index");
+const { Usuario, RefreshToken } = require("./../models/index");
 const {
   generateAccessToken,
   generateRefreshToken,
 } = require("../utils/jwtUtils");
-
-// TODO: Tech Debt: Implementar Tabla de Refresh Tokens
-const refreshTokens = []; // Solo un ejemplo, puedes usar un almacenamiento persistente.
+const { where } = require("sequelize");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -37,8 +35,15 @@ const login = async (req, res) => {
       email: user.email,
     });
 
-    // Almacenar el refreshToken
-    refreshTokens.push(refreshToken); // Esto es solo un ejemplo, deberías usar una base de datos.
+    // Almacenar el refreshToken en Base de Datos.
+    let expirationTime = new Date(Date.now() + 1 * (60 * 60 * 1000));
+
+    await RefreshToken.create({
+      refreshToken,
+      usuarioId: user.id,
+      issuedTime: new Date(),
+      expirationTime,
+    });
 
     return res.json({ accessToken, refreshToken });
   } catch (error) {
@@ -61,7 +66,7 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Crear el nuevo usuario
-    const newUser = await Usuario.create({
+    await Usuario.create({
       username,
       email,
       password: hashedPassword,
@@ -74,7 +79,7 @@ const register = async (req, res) => {
   }
 };
 
-const refreshAccessToken = (req, res) => {
+const refreshAccessToken = async (req, res) => {
   const { refreshToken } = req.body;
 
   // Verificar si se proporcionó el refreshToken
@@ -85,17 +90,36 @@ const refreshAccessToken = (req, res) => {
     });
   }
 
-  // Verificar si el refreshToken está almacenado
-  if (!refreshTokens.includes(refreshToken)) {
-    return res.status(401).json({
-      message: "Refresh token inválido o expirado",
-      status: 401,
-    });
-  }
-
+  // Validaciones para RefreshToken
   try {
-    // Verificar el refreshToken
+    // Verificar que el refreshToken fue firmado en nuestra API.
     const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    // Verificar si esta almacenado en base de datos el refreshToken.
+    const refreshTokenInDb = await RefreshToken.findOne({
+      where: { refreshToken },
+    });
+
+    // Si no existe el refreshToken en base de datos o si el expirationTime ya paso.
+    if (!refreshTokenInDb) {
+      return res.status(401).json({
+        message: "Refresh token inválido o expirado",
+        status: 401,
+      });
+    }
+
+    // Verificar si el token ya fue expirado.
+    if (refreshTokenInDb.expirationTime < new Date()) {
+      await refreshTokenInDb.destroy();
+
+      return res.status(401).json({
+        message: "Refresh token inválido o expirado",
+        status: 401,
+      });
+    }
+
+    // Borramos todos los refreshTokens en Base de datos, por seguridad. Se puede implementar otra estrategia para invalidar refreshTokens.
+    await refreshTokenInDb.destroy({ where: { userId: payload.id } });
 
     const accessToken = generateAccessToken({
       id: payload.id,
@@ -108,8 +132,15 @@ const refreshAccessToken = (req, res) => {
       email: payload.email,
     });
 
-    // Almacenar el refreshToken
-    refreshTokens.push(newRefreshToken); // Esto es solo un ejemplo, deberías usar una base de datos.
+    // Almacenar el nuevo refreshToken en base de datos.
+    let expirationTime = new Date(Date.now() + 1 * (60 * 60 * 1000));
+
+    await RefreshToken.create({
+      refreshToken: newRefreshToken,
+      usuarioId: payload.id, // el payload del token tiene el id del usuario y el email.
+      issuedTime: new Date(),
+      expirationTime,
+    });
 
     return res.json({ accessToken, refreshToken: newRefreshToken });
   } catch (error) {
@@ -120,13 +151,31 @@ const refreshAccessToken = (req, res) => {
   }
 };
 
-const logout = (req, res) => {
+const logout = async (req, res) => {
   const { refreshToken } = req.body;
 
-  // Elimina el refreshToken del almacenamiento
-  const index = refreshTokens.indexOf(refreshToken);
-  if (index > -1) {
-    refreshTokens.splice(index, 1);
+  // Elimina los refresh token.
+  try {
+    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    // Verificar si esta almacenado en base de datos el refreshToken.
+    const refreshTokenInDb = await RefreshToken.findOne({
+      where: { refreshToken },
+    });
+
+    if (!refreshTokenInDb) {
+      return res.status(400).json({
+        message: "Refresh token no válido",
+        status: 400,
+      });
+    }
+
+    await refreshTokenInDb.destroy({ where: { userId: payload.id } });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Refresh token no válido",
+      status: 400,
+    });
   }
 
   return res.json({ message: "Sesión cerrada" });
