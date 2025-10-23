@@ -1,11 +1,16 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+
+require("dotenv").config();
+
+const JTW_REFRESH_EXPIRATION_TIME =
+  parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) || 3600;
+
 const { Usuario, RefreshToken } = require("./../models/index");
 const {
   generateAccessToken,
   generateRefreshToken,
 } = require("../utils/jwtUtils");
-const { where } = require("sequelize");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -36,7 +41,9 @@ const login = async (req, res) => {
     });
 
     // Almacenar el refreshToken en Base de Datos.
-    let expirationTime = new Date(Date.now() + 1 * (60 * 60 * 1000));
+    let expirationTime = new Date(
+      Date.now() + 1 * (JTW_REFRESH_EXPIRATION_TIME * 1000)
+    );
 
     await RefreshToken.create({
       refreshToken,
@@ -133,7 +140,9 @@ const refreshAccessToken = async (req, res) => {
     });
 
     // Almacenar el nuevo refreshToken en base de datos.
-    let expirationTime = new Date(Date.now() + 1 * (60 * 60 * 1000));
+    let expirationTime = new Date(
+      Date.now() + 1 * (JTW_REFRESH_EXPIRATION_TIME * 1000)
+    );
 
     await RefreshToken.create({
       refreshToken: newRefreshToken,
