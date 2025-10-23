@@ -1,48 +1,47 @@
-const notFoundResponse = (res, message = "Recurso no encontrado") => {
-  return res.status(404).json({
+const { ReasonPhrases, StatusCodes } = require("http-status-codes");
+
+const notFoundResponse = (res, message = ReasonPhrases.NOT_FOUND) => {
+  return res.status(StatusCodes.NOT_FOUND).json({
     message,
-    status: 404,
+    status: StatusCodes.NOT_FOUND,
   });
 };
 
-const badRequestResponse = (res, message = "Solicitud incorrecta") => {
-  return res.status(400).json({
+const badRequestResponse = (res, message = ReasonPhrases.BAD_REQUEST) => {
+  return res.status(StatusCodes.BAD_REQUEST).json({
     message,
-    status: 400,
+    status: StatusCodes.BAD_REQUEST,
   });
 };
 
-const conflictResponse = (
-  res,
-  message = "Conflicto con los datos existentes",
-) => {
-  return res.status(409).json({
+const conflictResponse = (res, message = ReasonPhrases.CONFLICT) => {
+  return res.status(StatusCodes.CONFLICT).json({
     message,
-    status: 409,
+    status: StatusCodes.CONFLICT,
   });
 };
 
-const forbiddenResponse = (res, message = "Acceso prohibido") => {
-  return res.status(403).json({
+const forbiddenResponse = (res, message = ReasonPhrases.FORBIDDEN) => {
+  return res.status(StatusCodes.FORBIDDEN).json({
     message,
-    status: 403,
+    status: StatusCodes.FORBIDDEN,
   });
 };
 
-const unauthorizedResponse = (res, message = "No autorizado") => {
-  return res.status(401).json({
+const unauthorizedResponse = (res, message = ReasonPhrases.UNAUTHORIZED) => {
+  return res.status(StatusCodes.UNAUTHORIZED).json({
     message,
-    status: 401,
+    status: StatusCodes.UNAUTHORIZED,
   });
 };
 
 const internalServerErrorResponse = (
   res,
-  message = "Error interno del servidor",
+  message = ReasonPhrases.INTERNAL_SERVER_ERROR
 ) => {
-  return res.status(500).json({
+  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     message,
-    status: 500,
+    status: StatusCodes.INTERNAL_SERVER_ERROR,
   });
 };
 

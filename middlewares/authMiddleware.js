@@ -1,12 +1,18 @@
 const jwt = require("jsonwebtoken");
 
+const {
+  unauthorizedResponse,
+  forbiddenResponse,
+} = require("../utils/responseUtils");
+
 const authMiddleware = (req, res, next) => {
   const token = req.headers["authorization"]?.split(" ")[1]; // Extrae el token del header
 
   if (!token) {
-    return res
-      .status(401)
-      .json({ message: "Acceso denegado, token no proporcionado." });
+    return unauthorizedResponse(
+      res,
+      "Acceso denegado, token no proporcionado."
+    );
   }
 
   try {
@@ -14,7 +20,8 @@ const authMiddleware = (req, res, next) => {
     req.user = decoded; // Guarda los datos decodificados en `req.user` para usarlos en las rutas
     next(); // Continúa con la siguiente función en la ruta
   } catch (error) {
-    return res.status(403).json({ message: "Token no válido." });
+    console.log(error);
+    return forbiddenResponse(res, "Token no válido.");
   }
 };
 

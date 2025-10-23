@@ -1,7 +1,9 @@
 /** @type {import("express").RequestHandler} */
 
-const { Usuario, Rol } = require("./../models/index");
 const { request, response } = require("express");
+const { StatusCodes } = require("http-status-codes");
+
+const { Usuario, Rol } = require("./../models/index");
 const { notFoundResponse } = require("../utils/responseUtils");
 
 const getUsuarioRoles = async (req = request, res = response) => {
@@ -15,12 +17,12 @@ const getUsuarioRoles = async (req = request, res = response) => {
   });
 
   if (!user) {
-    return notFoundResponse(res, `Usuario no encontrado`);
+    return notFoundResponse(res, `Usuario no encontrado.`);
   }
 
   const roles = user.Roles; // al hacer la union lo deja con el plural de Roles, tal como hemos definido en el Modelo Roles dentro del objeto name: {}
 
-  return res.status(200).json(roles ?? []); // Devuelve un array vacio en caso que roles sea undefined o null
+  return res.status(StatusCodes.OK).json(roles ?? []); // Devuelve un array vacio en caso que roles sea undefined o null
 };
 
 const createUsuarioRole = async (req = request, res = response) => {
@@ -34,10 +36,15 @@ const createUsuarioRole = async (req = request, res = response) => {
       through: { attributes: [] }, // Esto omite los atributos de la tabla intermedia,
     },
   });
-  if (user === null) return notFoundResponse(res, `Usuario no encontrado`); // Abreviatura para no poner llaves si el if solo tiene una instruccion.
+
+  if (user === null) {
+    return notFoundResponse(res, `Usuario no encontrado.`);
+  }
 
   const role = await Rol.findByPk(rolId);
-  if (role === null) return notFoundResponse(res, `Rol no encontrado`);
+  if (role === null) {
+    return notFoundResponse(res, `Rol no encontrado.`);
+  }
 
   await user.addRol(role); // Agregamos el rol al usuario con el metodo addRol
 
@@ -48,7 +55,7 @@ const createUsuarioRole = async (req = request, res = response) => {
     },
   });
 
-  return res.status(201).json(user.Roles);
+  return res.status(StatusCodes.CREATED).json(user.Roles);
 };
 
 const deleteUsuarioRole = async (req = request, res = response) => {
@@ -62,14 +69,18 @@ const deleteUsuarioRole = async (req = request, res = response) => {
       through: { attributes: [] }, // Esto omite los atributos de la tabla intermedia,
     },
   });
-  if (user === null) return notFoundResponse(res, `Usuario no encontrado`); // Abreviatura para no poner llaves si el if solo tiene una instruccion.
+  if (user === null) {
+    return notFoundResponse(res, `Usuario no encontrado.`);
+  }
 
   const role = await Rol.findByPk(rolId);
-  if (role === null) return notFoundResponse(res, `Rol no encontrado`);
+  if (role === null) {
+    return notFoundResponse(res, `Rol no encontrado.`);
+  }
 
   await user.removeRol(role); // Eliminamos el rol al usuario con el metodo removeRol
 
-  return res.status(204).json();
+  return res.status(StatusCodes.NO_CONTENT).json();
 };
 
 module.exports = { getUsuarioRoles, createUsuarioRole, deleteUsuarioRole };

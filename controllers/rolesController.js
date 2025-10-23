@@ -1,16 +1,18 @@
 /** @type {import("express").RequestHandler} */
 
-const { Rol } = require("./../models/index");
 const { request, response } = require("express");
+const { ValidationError } = require("sequelize");
+const { StatusCodes } = require("http-status-codes");
+
+const { Rol } = require("./../models/index");
 const {
   notFoundResponse,
   conflictResponse,
 } = require("../utils/responseUtils");
-const { ValidationError } = require("sequelize");
 
-const getRolesList = async (req = request, res = response) => {
+const getRolesList = async (req, res = response) => {
   const roles = await Rol.findAll({ order: ["id"] });
-  return res.status(200).json(roles);
+  return res.status(StatusCodes.OK).json(roles);
 };
 
 const getRolById = async (req = request, res = response) => {
@@ -22,7 +24,7 @@ const getRolById = async (req = request, res = response) => {
     return notFoundResponse(res, `Rol no encontrado.`);
   }
 
-  return res.status(200).json(role);
+  return res.status(StatusCodes.OK).json(role);
 };
 
 const createRol = async (req = request, res = response) => {
@@ -38,11 +40,11 @@ const createRol = async (req = request, res = response) => {
     });
   } catch (error) {
     if (error instanceof ValidationError) {
-      return conflictResponse(res, "No se pudo crear el rol");
+      return conflictResponse(res, "No se pudo crear el rol.");
     }
   }
 
-  return res.status(201).json(role);
+  return res.status(StatusCodes.CREATED).json(role);
 };
 
 const updateRol = async (req = request, res = response) => {
@@ -52,7 +54,7 @@ const updateRol = async (req = request, res = response) => {
   // Recuperar el usuario previo a actualizar su informacion:
   const role = await Rol.findByPk(id);
   if (role === null) {
-    return notFoundResponse(res, "Rol no encontrado");
+    return notFoundResponse(res, "Rol no encontrado.");
   }
 
   // Validaciones
@@ -71,18 +73,18 @@ const updateRol = async (req = request, res = response) => {
 
   await role.save();
 
-  return res.status(200).json(role);
+  return res.status(StatusCodes.OK).json(role);
 };
 
 const deleteRol = async (req = request, res = response) => {
   const id = req.params.id;
   const role = await Rol.findByPk(id);
   if (role === null) {
-    return notFoundResponse(res, "Rol no encontrado");
+    return notFoundResponse(res, "Rol no encontrado.");
   }
   await role.destroy();
 
-  return res.status(204).json();
+  return res.status(StatusCodes.NO_CONTENT).json();
 };
 
 module.exports = { getRolesList, getRolById, createRol, updateRol, deleteRol };

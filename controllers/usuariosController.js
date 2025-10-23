@@ -1,17 +1,20 @@
 /** @type {import("express").RequestHandler} */
 
-const bcrypt = require("bcrypt");
-const { Usuario } = require("./../models/index");
 const { request, response } = require("express");
+const bcrypt = require("bcrypt");
+const { ValidationError } = require("sequelize");
+const { StatusCodes } = require("http-status-codes");
+
+const { Usuario } = require("./../models/index");
 const {
   notFoundResponse,
   conflictResponse,
+  badRequestResponse,
 } = require("../utils/responseUtils");
-const { ValidationError } = require("sequelize");
 
-const getUsuariosList = async (req = request, res = response) => {
+const getUsuariosList = async (req, res = response) => {
   const users = await Usuario.findAll({ order: ["id"] });
-  return res.status(200).json(users);
+  return res.status(StatusCodes.OK).json(users);
 };
 
 const getUsuarioById = async (req = request, res = response) => {
@@ -22,9 +25,9 @@ const getUsuarioById = async (req = request, res = response) => {
   });
 
   if (user === null) {
-    return notFoundResponse(res, "Usuario no encontrado");
+    return notFoundResponse(res, "Usuario no encontrado.");
   }
-  return res.status(200).json(user);
+  return res.status(StatusCodes.OK).json(user);
 };
 
 const createUsuario = async (req = request, res = response) => {
@@ -43,14 +46,14 @@ const createUsuario = async (req = request, res = response) => {
     });
   } catch (error) {
     if (error instanceof ValidationError) {
-      return conflictResponse(res, "No se pudo crear el usuario");
+      return conflictResponse(res, "No se pudo crear el usuario.");
     }
   }
 
   // Quitar el password para este user, mismo caso: ocultamos de la response el password.
   user.password = undefined;
 
-  return res.status(201).json(user);
+  return res.status(StatusCodes.CREATED).json(user);
 };
 
 const updateUsuario = async (req = request, res = response) => {
@@ -60,7 +63,7 @@ const updateUsuario = async (req = request, res = response) => {
   // Recuperar el usuario previo a actualizar su informacion:
   const user = await Usuario.findByPk(id);
   if (user === null) {
-    return notFoundResponse(res, "Usuario no encontrado");
+    return notFoundResponse(res, "Usuario no encontrado.");
   }
 
   // Validaciones
@@ -76,7 +79,7 @@ const updateUsuario = async (req = request, res = response) => {
     // Hay un usuario que tiene este correo actualmente
     if (existingUser.id !== user.id) {
       // Validamos si este usuario es el mismo, si NO es asi, retornamos el error.
-      return res.status(400).json({ message: "El correo ya está en uso" });
+      return badRequestResponse(res, "El correo ya está en uso.");
     }
   } else {
     user.email = email;
@@ -94,18 +97,18 @@ const updateUsuario = async (req = request, res = response) => {
   await user.save();
   user.password = undefined;
 
-  return res.status(200).json(user);
+  return res.status(StatusCodes.OK).json(user);
 };
 
 const deleteUsuario = async (req = request, res = response) => {
   const id = req.params.id;
   const user = await Usuario.findByPk(id);
   if (user === null) {
-    return notFoundResponse(res, "Usuario no encontrado");
+    return notFoundResponse(res, "Usuario no encontrado.");
   }
   await user.destroy();
 
-  return res.status(204).json();
+  return res.status(StatusCodes.NO_CONTENT).json();
 };
 
 module.exports = {

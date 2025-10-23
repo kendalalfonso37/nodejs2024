@@ -1,16 +1,24 @@
+/** @type {import("express").RequestHandler} */
+
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { StatusCodes } = require("http-status-codes");
 
 require("dotenv").config();
-
-const JTW_REFRESH_EXPIRATION_TIME =
-  parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) || 3600;
 
 const { Usuario, RefreshToken } = require("./../models/index");
 const {
   generateAccessToken,
   generateRefreshToken,
 } = require("../utils/jwtUtils");
+const {
+  badRequestResponse,
+  internalServerErrorResponse,
+  unauthorizedResponse,
+} = require("../utils/responseUtils");
+
+const JTW_REFRESH_EXPIRATION_TIME =
+  parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) || 3600;
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -18,19 +26,13 @@ const login = async (req, res) => {
   try {
     const user = await Usuario.findOne({ where: { email } });
     if (!user) {
-      return res.status(401).json({
-        message: "Usuario no Encontrado",
-        status: 401,
-      });
+      return badRequestResponse(res, "Usuario no Encontrado.");
     }
 
     // Verificar la contraseña (ejemplo con bcrypt)
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({
-        message: "Contraseña incorrecta",
-        status: 401,
-      });
+      return badRequestResponse(res, "Contraseña incorrecta.");
     }
 
     // Generar accessToken y refreshToken
@@ -54,8 +56,12 @@ const login = async (req, res) => {
 
     return res.json({ accessToken, refreshToken });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error en el servidor" });
+    console.log(error);
+
+    return internalServerErrorResponse(
+      res,
+      "Error al momento de iniciar sesión."
+    );
   }
 };
 
@@ -66,7 +72,7 @@ const register = async (req, res) => {
     // Verificar si el email ya existe
     const existingUser = await Usuario.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ message: "El correo ya está en uso" });
+      return badRequestResponse(res, "El correo ya está en uso.");
     }
 
     // Encriptar la contraseña
@@ -79,10 +85,15 @@ const register = async (req, res) => {
       password: hashedPassword,
     });
 
-    return res.status(201).json({ message: "Usuario registrado exitosamente" });
+    return res
+      .status(StatusCodes.CREATED)
+      .json({ message: "Usuario registrado exitosamente." });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Error en el servidor" });
+    return internalServerErrorResponse(
+      res,
+      "Error al momento de registrar el usuario."
+    );
   }
 };
 
@@ -91,10 +102,7 @@ const refreshAccessToken = async (req, res) => {
 
   // Verificar si se proporcionó el refreshToken
   if (!refreshToken) {
-    return res.status(401).json({
-      message: "Token de actualización no proporcionado",
-      status: 401,
-    });
+    return unauthorizedResponse(res, "Refresh token no proporcionado.");
   }
 
   // Validaciones para RefreshToken
@@ -109,20 +117,13 @@ const refreshAccessToken = async (req, res) => {
 
     // Si no existe el refreshToken en base de datos o si el expirationTime ya paso.
     if (!refreshTokenInDb) {
-      return res.status(401).json({
-        message: "Refresh token inválido o expirado",
-        status: 401,
-      });
+      return unauthorizedResponse(res, "Refresh token inválido o expirado.");
     }
 
     // Verificar si el token ya fue expirado.
     if (refreshTokenInDb.expirationTime < new Date()) {
       await refreshTokenInDb.destroy();
-
-      return res.status(401).json({
-        message: "Refresh token inválido o expirado",
-        status: 401,
-      });
+      return unauthorizedResponse(res, "Refresh token inválido o expirado.");
     }
 
     // Borramos todos los refreshTokens en Base de datos, por seguridad. Se puede implementar otra estrategia para invalidar refreshTokens.
@@ -153,10 +154,8 @@ const refreshAccessToken = async (req, res) => {
 
     return res.json({ accessToken, refreshToken: newRefreshToken });
   } catch (error) {
-    return res.status(401).json({
-      message: "Refresh token no válido",
-      status: 401,
-    });
+    console.log(error);
+    return unauthorizedResponse(res, "Refresh token no válido.");
   }
 };
 
@@ -173,21 +172,16 @@ const logout = async (req, res) => {
     });
 
     if (!refreshTokenInDb) {
-      return res.status(400).json({
-        message: "Refresh token no válido",
-        status: 400,
-      });
+      return badRequestResponse(res, "Refresh token no válido.");
     }
 
     await refreshTokenInDb.destroy({ where: { userId: payload.id } });
   } catch (error) {
-    return res.status(400).json({
-      message: "Refresh token no válido",
-      status: 400,
-    });
+    console.log(error);
+    return badRequestResponse(res, "Refresh token no válido.");
   }
 
-  return res.json({ message: "Sesión cerrada" });
+  return res.json({ message: "Sesión cerrada." });
 };
 
 module.exports = { login, register, refreshAccessToken, logout };

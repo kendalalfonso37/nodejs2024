@@ -2,13 +2,14 @@ const express = require("express");
 const logger = require("morgan");
 const bodyParser = require("body-parser");
 
+require("dotenv").config();
+
 // importando routes
-const authRoutes = require("./routes/authRoutes");
-const usuariosRoutes = require("./routes/usuariosRoutes");
-const rolesRoutes = require("./routes/rolesRoutes");
+const routes = require("./routes");
 
 // This will be our application entry. We'll setup our server here
 const http = require("http");
+
 const notFoundHandler = require("./middlewares/notFoundHandler");
 const errorHandler = require("./middlewares/errorHandler");
 
@@ -23,9 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Registrar rutas:
-app.use("/auth", authRoutes);
-app.use("/usuarios", usuariosRoutes);
-app.use("/roles", rolesRoutes);
+app.use("/", routes);
 
 // Middleware para manejar rutas inexistentes (404)
 app.use(notFoundHandler);
