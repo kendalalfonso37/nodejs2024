@@ -12,7 +12,7 @@ const {
   badRequestResponse,
 } = require("../utils/responseUtils");
 
-const getUsuariosList = async (req, res = response) => {
+const getUsuariosList = async (req = request, res = response) => {
   const users = await Usuario.findAll({ order: ["id"] });
   return res.status(StatusCodes.OK).json(users);
 };

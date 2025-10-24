@@ -10,7 +10,7 @@ const {
   conflictResponse,
 } = require("../utils/responseUtils");
 
-const getRolesList = async (req, res = response) => {
+const getRolesList = async (req = request, res = response) => {
   const roles = await Rol.findAll({ order: ["id"] });
   return res.status(StatusCodes.OK).json(roles);
 };

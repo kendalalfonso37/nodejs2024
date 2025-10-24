@@ -1,6 +1,7 @@
 /** @type {import("express").RequestHandler} */
 
 const jwt = require("jsonwebtoken");
+const { request, response } = require("express");
 const bcrypt = require("bcrypt");
 const { StatusCodes } = require("http-status-codes");
 
@@ -20,7 +21,7 @@ const {
 const JTW_REFRESH_EXPIRATION_TIME =
   parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) || 3600;
 
-const login = async (req, res) => {
+const login = async (req = request, res = response) => {
   const { email, password } = req.body;
 
   try {
@@ -65,7 +66,7 @@ const login = async (req, res) => {
   }
 };
 
-const register = async (req, res) => {
+const register = async (req = request, res = response) => {
   const { username, email, password } = req.body;
 
   try {
@@ -97,7 +98,7 @@ const register = async (req, res) => {
   }
 };
 
-const refreshAccessToken = async (req, res) => {
+const refreshAccessToken = async (req = request, res = response) => {
   const { refreshToken } = req.body;
 
   // Verificar si se proporcionó el refreshToken
@@ -159,7 +160,7 @@ const refreshAccessToken = async (req, res) => {
   }
 };
 
-const logout = async (req, res) => {
+const logout = async (req = request, res = response) => {
   const { refreshToken } = req.body;
 
   // Elimina los refresh token.

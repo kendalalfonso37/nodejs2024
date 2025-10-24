@@ -1,7 +1,8 @@
+const { request, response } = require("express");
 const { StatusCodes } = require("http-status-codes");
 
 // eslint-disable-next-line no-unused-vars
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req = request, res = response, next) => {
   // Log del Error en consola
   console.log(err);
   // Si el error es una instancia de Error, usa su mensaje; si no, responde con un mensaje genérico
