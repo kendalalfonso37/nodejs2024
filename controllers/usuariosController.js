@@ -2,7 +2,6 @@
 
 const { request, response } = require("express");
 const bcrypt = require("bcrypt");
-const { ValidationError } = require("sequelize");
 const { StatusCodes } = require("http-status-codes");
 
 const { Usuario } = require("./../models/index");
@@ -10,24 +9,38 @@ const {
   notFoundResponse,
   conflictResponse,
   badRequestResponse,
+  internalServerErrorResponse,
 } = require("../utils/responseUtils");
 
 const getUsuariosList = async (req = request, res = response) => {
-  const users = await Usuario.findAll({ order: ["id"] });
-  return res.status(StatusCodes.OK).json(users);
+  try {
+    const users = await Usuario.findAll({ order: ["id"] });
+    return res.status(StatusCodes.OK).json(users);
+  } catch (error) {
+    console.log(error);
+    return internalServerErrorResponse(
+      res,
+      "No se pudo obtener la lista de usuarios."
+    );
+  }
 };
 
 const getUsuarioById = async (req = request, res = response) => {
   const id = req.params.id;
 
-  const user = await Usuario.findByPk(id, {
-    attributes: { exclude: ["password"] }, // No queremos que se devuelva tambien el password del usuario, verdad?
-  });
+  try {
+    const user = await Usuario.findByPk(id, {
+      attributes: { exclude: ["password"] }, // No queremos que se devuelva tambien el password del usuario, verdad?
+    });
 
-  if (user === null) {
-    return notFoundResponse(res, "Usuario no encontrado.");
+    if (user === null) {
+      return notFoundResponse(res, "Usuario no encontrado.");
+    }
+    return res.status(StatusCodes.OK).json(user);
+  } catch (error) {
+    console.log(error);
+    return internalServerErrorResponse(res, "No se pudo obtener el usuario.");
   }
-  return res.status(StatusCodes.OK).json(user);
 };
 
 const createUsuario = async (req = request, res = response) => {
@@ -39,15 +52,20 @@ const createUsuario = async (req = request, res = response) => {
   let user;
   // Crear el nuevo usuario
   try {
+    // Verificar si el email ya existe
+    const existingUser = await Usuario.findOne({ where: { email } });
+    if (existingUser) {
+      return badRequestResponse(res, "El correo ya está en uso.");
+    }
+
     user = await Usuario.create({
       username,
       email,
       password,
     });
   } catch (error) {
-    if (error instanceof ValidationError) {
-      return conflictResponse(res, "No se pudo crear el usuario.");
-    }
+    console.log(error);
+    return conflictResponse(res, "No se pudo crear el usuario.");
   }
 
   // Quitar el password para este user, mismo caso: ocultamos de la response el password.
@@ -60,55 +78,71 @@ const updateUsuario = async (req = request, res = response) => {
   const { username, email, password, isActive } = req.body;
   const id = req.params.id;
 
-  // Recuperar el usuario previo a actualizar su informacion:
-  const user = await Usuario.findByPk(id);
-  if (user === null) {
-    return notFoundResponse(res, "Usuario no encontrado.");
-  }
-
-  // Validaciones
-  // is username is not null actualizarlo:
-  if (username !== undefined) {
-    user.username = username;
-  }
-
-  // email nuevo no existe?
-  const existingUser = await Usuario.findOne({ where: { email } });
-
-  if (existingUser) {
-    // Hay un usuario que tiene este correo actualmente
-    if (existingUser.id !== user.id) {
-      // Validamos si este usuario es el mismo, si NO es asi, retornamos el error.
-      return badRequestResponse(res, "El correo ya está en uso.");
+  try {
+    // Recuperar el usuario previo a actualizar su informacion:
+    const user = await Usuario.findByPk(id);
+    if (user === null) {
+      return notFoundResponse(res, "Usuario no encontrado.");
     }
-  } else {
-    user.email = email;
+
+    // Validaciones
+    // is username is not null actualizarlo:
+    if (username !== undefined) {
+      user.username = username;
+    }
+
+    // email nuevo no existe?
+    const existingUser = await Usuario.findOne({ where: { email } });
+
+    if (existingUser) {
+      // Hay un usuario que tiene este correo actualmente
+      if (existingUser.id !== user.id) {
+        // Validamos si este usuario es el mismo, si NO es asi, retornamos el error.
+        return badRequestResponse(res, "El correo ya está en uso.");
+      }
+    } else {
+      user.email = email;
+    }
+
+    // password a actualizar?
+    if (password !== undefined) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+
+    if (isActive !== undefined) {
+      user.isActive = isActive;
+    }
+
+    await user.save();
+
+    user.password = undefined;
+
+    return res.status(StatusCodes.OK).json(user);
+  } catch (error) {
+    console.log(error);
+    return internalServerErrorResponse(
+      res,
+      "No se pudo actualizar el usuario."
+    );
   }
-
-  // password a actualizar?
-  if (password !== undefined) {
-    user.password = await bcrypt.hash(password, 10);
-  }
-
-  if (isActive !== undefined) {
-    user.isActive = isActive;
-  }
-
-  await user.save();
-  user.password = undefined;
-
-  return res.status(StatusCodes.OK).json(user);
 };
 
 const deleteUsuario = async (req = request, res = response) => {
   const id = req.params.id;
-  const user = await Usuario.findByPk(id);
-  if (user === null) {
-    return notFoundResponse(res, "Usuario no encontrado.");
-  }
-  await user.destroy();
 
-  return res.status(StatusCodes.NO_CONTENT).json();
+  try {
+    const user = await Usuario.findByPk(id);
+    if (user === null) {
+      return notFoundResponse(res, "Usuario no encontrado.");
+    }
+
+    await user.destroy();
+
+    return res.status(StatusCodes.NO_CONTENT).json();
+  } catch (error) {
+    console.log(error);
+    return internalServerErrorResponse(res, "No se pudo eliminar el usuario.");
+  }
 };
 
 module.exports = {

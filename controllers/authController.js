@@ -58,7 +58,6 @@ const login = async (req = request, res = response) => {
     return res.json({ accessToken, refreshToken });
   } catch (error) {
     console.log(error);
-
     return internalServerErrorResponse(
       res,
       "Error al momento de iniciar sesión."
