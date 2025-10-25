@@ -6,10 +6,12 @@ const router = express.Router();
 const authRoutes = require("./authRoutes");
 const usuariosRoutes = require("./usuariosRoutes");
 const rolesRoutes = require("./rolesRoutes");
+const categoriasRoutes = require("./categoriasRoutes");
 
 // cargamos nuestras rutas al router principal.
 router.use("/auth", authRoutes);
 router.use("/usuarios", usuariosRoutes);
 router.use("/roles", rolesRoutes);
+router.use("/categorias", categoriasRoutes);
 
 module.exports = router;
