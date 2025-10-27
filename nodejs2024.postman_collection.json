@@ -685,6 +685,190 @@
 			]
 		},
 		{
+			"name": "productos",
+			"item": [
+				{
+					"name": "get productos list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/productos",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"productos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get producto by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/productos/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"productos",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create producto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Smartphone ABC\",\n    \"descripcion\": \"Un smartphone de última generación con múltiples funciones.\",\n    \"precioPorUnidad\": \"399.00\",\n    \"precioUnitario\": \"399.00\",\n    \"unidadesEnStock\": 10,\n    \"unidadesEnOrden\": 10,\n    \"categoriaId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/productos",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"productos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update producto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Smartphone ABC\",\n    \"descripcion\": \"Un smartphone de última generación con múltiples funciones.\",\n    \"precioPorUnidad\": \"499.00\",\n    \"precioUnitario\": \"499.00\",\n    \"unidadesEnStock\": 50,\n    \"unidadesEnOrden\": 50,\n    \"categoriaId\": 1,\n    \"isActive\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/productos/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"productos",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete producto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/productos/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"productos",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "login",
 			"event": [
 				{
