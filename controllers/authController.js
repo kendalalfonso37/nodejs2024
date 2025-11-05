@@ -127,7 +127,7 @@ const refreshAccessToken = async (req = request, res = response) => {
     }
 
     // Borramos todos los refreshTokens en Base de datos, por seguridad. Se puede implementar otra estrategia para invalidar refreshTokens.
-    await refreshTokenInDb.destroy({ where: { userId: payload.id } });
+    await RefreshToken.destroy({ where: { usuarioId: payload.id } });
 
     const accessToken = generateAccessToken({
       id: payload.id,
@@ -175,7 +175,7 @@ const logout = async (req = request, res = response) => {
       return badRequestResponse(res, "Refresh token no válido.");
     }
 
-    await refreshTokenInDb.destroy({ where: { userId: payload.id } });
+    await RefreshToken.destroy({ where: { usuarioId: payload.id } });
   } catch (error) {
     console.log(error);
     return badRequestResponse(res, "Refresh token no válido.");

@@ -2,7 +2,7 @@ const { request, response } = require("express");
 const { StatusCodes } = require("http-status-codes");
 
 const { internalServerErrorResponse } = require("../utils/responseUtils");
-const { Producto } = require("./../models/index");
+const { Producto, Categoria } = require("./../models/index");
 
 const getProductos = async (req = request, res = response) => {
   try {
@@ -85,16 +85,6 @@ const updateProducto = async (req = request, res = response) => {
         .json({ message: "Producto no encontrado." });
     }
 
-    const categoriaIdExists = await Producto.findOne({
-      where: { id: categoriaId },
-    });
-
-    if (!categoriaIdExists) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: "La categoriaId proporcionada no existe." });
-    }
-
     // Validaciones
     if (nombre !== undefined) {
       producto.nombre = nombre;
@@ -115,6 +105,14 @@ const updateProducto = async (req = request, res = response) => {
       producto.unidadesEnOrden = unidadesEnOrden;
     }
     if (categoriaId !== undefined) {
+      const categoria = await Categoria.findByPk(categoriaId);
+
+      if (!categoria) {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "La categoriaId proporcionada no existe." });
+      }
+
       producto.categoriaId = categoriaId;
     }
     if (isActive !== undefined) {

@@ -91,16 +91,15 @@ const updateUsuario = async (req = request, res = response) => {
       user.username = username;
     }
 
-    // email nuevo no existe?
-    const existingUser = await Usuario.findOne({ where: { email } });
+    if (email !== undefined) {
+      // email nuevo no existe?
+      const existingUser = await Usuario.findOne({ where: { email } });
 
-    if (existingUser) {
-      // Hay un usuario que tiene este correo actualmente
-      if (existingUser.id !== user.id) {
+      if (existingUser && existingUser.id !== user.id) {
         // Validamos si este usuario es el mismo, si NO es asi, retornamos el error.
         return badRequestResponse(res, "El correo ya está en uso.");
       }
-    } else {
+
       user.email = email;
     }
 
